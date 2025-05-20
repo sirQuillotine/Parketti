@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Parketti</title>
+</head>
+
+<body>
+  <h1>Parketti</h1>
+  {% if session.username %}
+  <p>
+    Olet kirjautunut nimellä {{ session.username }}
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+
+    {% else %}
+  <p>
+    <a href="/login">Kirjaudu</a>
+    <a href="/register">Rekisteröidy</a>
+  </p>
+
+  <hr>
+    {% endif %}
+    <h2>Tirva</h2>
+    <p>Paljon menoa</p>
+    <hr>
+    <h2>Kapakanmäki</h2>
+    <p>Enemmän menoa</p>
+</body>
+
+
+</html>
