@@ -18,14 +18,19 @@
     <a href="/login">Kirjaudu</a>
     <a href="/register">Rekisteröidy</a>
   </p>
-
+{% endif %}
   <hr>
-    {% endif %}
-    <h2>Tirva</h2>
-    <p>Paljon menoa</p>
-    <hr>
-    <h2>Kapakanmäki</h2>
-    <p>Enemmän menoa</p>
+    
+
+    <h2>Tapahtumat</h2> <a href="/add">Lisää uusi tapahtuma</a>
+    {% for event in events %}
+  <p>
+    <a href="/">{{ event.title }}</a>
+    <br />
+    {{ event.content }}, lisännyt {{ event.username }}
+  </p>
+  <hr />
+  {% endfor %}
 </body>
 
 
