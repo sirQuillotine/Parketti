@@ -22,12 +22,23 @@
   <hr>
     
 
-    <h2>Tapahtumat</h2> <a href="/add">Lisää uusi tapahtuma</a>
+    <h2>Tapahtumat</h2> 
+    {% if session.username %}
+    <a href="/add">Lisää uusi tapahtuma</a>
+    {% endif %}
+  <hr>
+
     {% for event in events %}
   <p>
     <a href="/">{{ event.title }}</a>
     <br />
     {{ event.content }}, lisännyt {{ event.username }}
+  </p>
+  <p>
+    {% if event.username == session.username %}
+    <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
+    <a href="/delete/{{ event.id }}">Poista</a>
+    {% endif %}
   </p>
   <hr />
   {% endfor %}

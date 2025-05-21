@@ -1,0 +1,17 @@
+  <h2>Uusi tapahtuma</h2>
+
+  <form action="/edit/{{ event.id }}" method="post">
+    <p>
+      Tanssilavan nimi: <br />
+      <input type="text" name="title" value="{{event.title}}"/>
+    </p>
+    <p>
+      tapahtuman ajankohta: <br />
+      <textarea name="start_time" rows="5" cols="40">{{event.start_time}}</textarea>
+    </p>
+    <p>
+      tapahtuman kuvaus: <br />
+      <textarea name="content" rows="5" cols="40">{{event.content}}</textarea>
+    </p>
+    <input type="submit" value="Lähetä" />
+  </form>

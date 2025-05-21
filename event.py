@@ -11,3 +11,17 @@ def get_events():
              FROM events e
              """
     return db.query(sql)
+
+def get_event(event_id):
+    sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
+             FROM events e WHERE e.id = ?"""
+    return db.query(sql, [event_id])[0]
+
+def update_event(event_id, title, content, start_time):
+    sql = """UPDATE events SET title = ?, content = ?, start_time = ? WHERE id = ?"""
+    db.execute(sql, [title, content, start_time, event_id])
+
+def delete_event(event_id):
+    sql = """DELETE FROM events WHERE id = ?"""
+    db.execute(sql, [event_id])
+

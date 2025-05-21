@@ -1,27 +1,71 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, abort, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
+import event
 
 app = Flask(__name__)
 app.secret_key = "ananas"
 
 @app.route("/")
 def index():
-    return render_template("index.html", session=session)
+    events = event.get_events()
+    return render_template("index.html", events=events, session=session)
 
 @app.route("/register")
 def register():
     return render_template("register.html")
 
+@app.route("/add")
+def add_get():
+    return render_template("add.html")
+
+@app.route("/add", methods=["POST"])
+def add_post():
+    title = request.form["title"]
+    content = request.form["content"]
+    start_time = request.form["start_time"]
+    event_id = event.add_event(title, content, start_time, session["username"])
+    return redirect("/")
+
+@app.route("/edit/<int:event_id>", methods=["GET", "POST"])
+def edit_event(event_id):
+    event_e = event.get_event(event_id)
+    if event_e["username"] != session["username"]:
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("edit.html", event=event_e)
+    
+    if request.method == "POST":
+        title = request.form["title"]
+        content = request.form["content"]
+        start_time = request.form["start_time"]
+        event.update_event(event_id, title, content, start_time)
+        return redirect("/")
+
+@app.route("/delete/<int:event_id>", methods=["GET", "POST"])
+def delete_event(event_id):
+    event_r = event.get_event(event_id)
+    if event_r["username"] != session["username"]:
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("delete.html", event=event_r)
+
+    if request.method == "POST":
+        if "continue" in request.form:
+            event.delete_event(event_r["id"])
+        return redirect("/")
+
 
 @app.route("/login")
-def lgin():
+def login_get():
     return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
-def login():
+def login_post():
     username = request.form["username"]
     password = request.form["password"]
     
