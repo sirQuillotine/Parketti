@@ -1,6 +1,8 @@
   <h2>Uusi tapahtuma</h2>
 
   <form action="/edit/{{ event.id }}" method="post">
+    <a href="/">Peruuta</a>
+    <hr>
     <p>
       Tanssilavan nimi: <br />
       <input type="text" name="title" value="{{event.title}}"/>

@@ -12,6 +12,11 @@ def get_events():
              """
     return db.query(sql)
 
+def search_events(search):
+    sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
+             FROM events e WHERE e.title LIKE ? OR e.content LIKE ?"""
+    return db.query(sql, ["%" + search + "%", "%" + search + "%"])
+
 def get_event(event_id):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
              FROM events e WHERE e.id = ?"""

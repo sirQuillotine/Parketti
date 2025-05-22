@@ -10,8 +10,12 @@ app.secret_key = "ananas"
 
 @app.route("/")
 def index():
-    events = event.get_events()
-    return render_template("index.html", events=events, session=session)
+    query = request.args.get("query")
+    if query:
+        events = event.search_events(query)
+    else:
+        events = event.get_events()
+    return render_template("index.html", query=query, events=events, session=session)
 
 @app.route("/register")
 def register():

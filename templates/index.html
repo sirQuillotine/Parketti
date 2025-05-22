@@ -21,27 +21,48 @@
 {% endif %}
   <hr>
     
+    <p>
+        <h2>Tapahtumat</h2>
+        {% if session.username %}
+        <a href="/add">Lisää uusi tapahtuma</a>
+        {% endif %}
 
-    <h2>Tapahtumat</h2> 
-    {% if session.username %}
-    <a href="/add">Lisää uusi tapahtuma</a>
-    {% endif %}
+    </p>
+    
+
+    <form action="/" method="get">
+    <p>
+      {% if query %}
+      <input type="text" name="query" value="{{ query }}" />
+      {% else %}
+      <input type="text" name="query" placeholder="Hae tapahtumaa..." />
+      {% endif %}
+      <input type="submit" value="Hae" />
+    </p>
+    
+  </form>
+
+    
   <hr>
+    {% if not events %}
+    <p>Ei tapahtumia</p>
+    {% endif %}
+
 
     {% for event in events %}
-  <p>
-    <a href="/">{{ event.title }}</a>
-    <br />
-    {{ event.content }}, lisännyt {{ event.username }}
-  </p>
-  <p>
-    {% if event.username == session.username %}
-    <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
-    <a href="/delete/{{ event.id }}">Poista</a>
-    {% endif %}
-  </p>
-  <hr />
-  {% endfor %}
+        <p>
+            <a href="/">{{ event.title }}</a>
+            <br />
+            {{ event.content }}, lisännyt {{ event.username }}
+        </p>
+        <p>
+            {% if event.username == session.username %}
+            <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
+            <a href="/delete/{{ event.id }}">Poista</a>
+            {% endif %}
+        </p>
+        <hr />
+    {% endfor %}
 </body>
 
 
