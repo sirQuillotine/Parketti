@@ -1,19 +1,30 @@
   <h2>Uusi tapahtuma</h2>
 
+  <a href="/">Peruuta</a>
+  <hr>
+  
   <form action="/add" method="post">
-    <a href="/">Peruuta</a>
-    <hr>
     <p>
       Tanssilavan nimi: <br />
-      <input type="text" name="title" />
+      <input type="text" name="title" required/>
     </p>
     <p>
       tapahtuman ajankohta: <br />
-      <textarea name="start_time" rows="5" cols="40"></textarea>
+      <input type="date" name="start_time" required/>
     </p>
     <p>
       tapahtuman kuvaus: <br />
-      <textarea name="content" rows="5" cols="40"></textarea>
+      <textarea name="content" rows="5" cols="40" required></textarea>
+    </p>
+    <p>
+      tanssilajit: <br />
+      <input type="checkbox" name="styles" value="foksi" /> foksi
+      <input type="checkbox" name="styles" value="fusku" /> fusku
+      <input type="checkbox" name="styles" value="valssi" /> valssi
+      <input type="checkbox" name="styles" value="jive" /> jive
+      <input type="checkbox" name="styles" value="samba" /> samba
+      <input type="checkbox" name="styles" value="tango" /> tango
+    
     </p>
     <input type="submit" value="Lähetä" />
   </form>

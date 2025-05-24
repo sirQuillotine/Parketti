@@ -51,7 +51,7 @@
 
     {% for event in events %}
         <p>
-            <a href="/">{{ event.title }}</a>
+            <a href="/event/{{event.id}}">{{ event.title }}</a> |  {{event.start_time }}
             <br />
             {{ event.content }}, lisännyt {{ event.username }}
         </p>

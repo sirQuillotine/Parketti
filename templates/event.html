@@ -1,0 +1,44 @@
+  <a href="/">Etusivu</a>
+  <hr>
+
+<h1>{{ event.title }}</h1>
+{{event.start_time }}
+
+<hr>
+
+<p>
+    {% for style in styles %}
+        {% if loop.last %}
+            {{style.style}}
+        {% else %}
+            {{style.style}} | 
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p>
+    {{ event.content }}  <br/>
+    lisännyt {{ event.username }}
+</p>
+
+<hr>
+
+<h2>Tapahtumaan osallistuu:</h2>
+
+{% if session.username and show==True%}
+<form action="/event/{{event.id}}" method="post">
+    <input type="submit" value="Ilmoittaudu tapahtumaan" />
+</form>
+{% endif %}
+
+{% if session.username and show==False%}
+<form action="/event/{{event.id}}" method="post">
+    <input type="submit" value="Perun ilmoittautuminen" />
+</form>
+{% endif %}
+
+{% for participant in participants %}
+    <p>
+        {{ participant }}
+    </p>
+{% endfor %}

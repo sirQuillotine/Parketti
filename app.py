@@ -8,6 +8,7 @@ import event
 app = Flask(__name__)
 app.secret_key = "ananas"
 
+
 @app.route("/")
 def index():
     query = request.args.get("query")
@@ -21,17 +22,44 @@ def index():
 def register():
     return render_template("register.html")
 
-@app.route("/add")
-def add_get():
-    return render_template("add.html")
 
-@app.route("/add", methods=["POST"])
-def add_post():
-    title = request.form["title"]
-    content = request.form["content"]
-    start_time = request.form["start_time"]
-    event_id = event.add_event(title, content, start_time, session["username"])
-    return redirect("/")
+    
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "GET":
+        return render_template("add.html")
+
+    if request.method == "POST":
+        title = request.form["title"]
+        content = request.form["content"]
+        start_time = request.form["start_time"]
+        styles = request.form.getlist("styles")
+        event_id = event.add_event(title, content, start_time, session["username"], styles)
+        return redirect("/")
+
+
+@app.route("/event/<int:event_id>", methods=["GET", "POST"])
+def event_details(event_id):
+    show_participation = True
+    event_e = event.get_event(event_id)
+    event_styles = event.get_event_styles(event_id)
+    event_participants = event.get_event_participants(event_id)
+
+    if request.method == "POST":
+        if session["username"] in event_participants:
+            print("poistetaan osallistuja")
+            event.delete_participant(event_id, session["username"])
+        else:
+            print("lisätään osallistuja")
+            event.add_participants(event_id, session["username"])
+        event_participants = event.get_event_participants(event_id)
+
+    if "username" in session.keys():
+        if session["username"] in event_participants:
+            show_participation = False
+    return render_template("event.html", event=event_e, styles=event_styles, participants=event_participants, show=show_participation, session=session)
+
+
 
 @app.route("/edit/<int:event_id>", methods=["GET", "POST"])
 def edit_event(event_id):
@@ -64,23 +92,23 @@ def delete_event(event_id):
         return redirect("/")
 
 
-@app.route("/login")
-def login_get():
-    return render_template("login.html")
-
-@app.route("/login", methods=["POST"])
-def login_post():
-    username = request.form["username"]
-    password = request.form["password"]
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
     
-    sql = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        
+        sql = "SELECT password_hash FROM users WHERE username = ?"
+        password_hash = db.query(sql, [username])[0][0]
 
-    if check_password_hash(password_hash, password):
-        session["username"] = username
-        return redirect("/")
-    else:
-        return "VIRHE: väärä tunnus tai salasana"
+        if check_password_hash(password_hash, password):
+            session["username"] = username
+            return redirect("/")
+        else:
+            return "VIRHE: väärä tunnus tai salasana"
 
 @app.route("/logout")
 def logout():
