@@ -1,0 +1,54 @@
+<a href="/">Etusivu</a>
+<hr>
+
+<h1>{{username}}</h1>
+
+<p>
+    Käyttäjä on lisännyt {{events | count }} tapahtumaa ja osallistuu {{participations | count }} tapahtumaan.
+</p>
+
+<hr>
+
+<h2>Käyttäjän lisäämät tapahtumat</h2>
+
+{% if not events %}
+    <p>Ei tapahtumia</p>
+{% endif %}
+
+
+{% for event in events %}
+    <p>
+        <a href="/event/{{event.id}}">{{ event.title }}</a> |  {{event.start_time }}
+        <br />
+        {{ event.content }}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
+    </p>
+    <p>
+        {% if event.username == session.username %}
+        <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
+        <a href="/delete/{{ event.id }}">Poista</a>
+        {% endif %}
+    </p>
+    <hr />
+{% endfor %}
+
+<h2>Käyttäjä osallistumiset</h2>
+
+{% if not participations %}
+    <p>Ei tapahtumia</p>
+{% endif %}
+
+
+{% for participation in participations %}
+    <p>
+        <a href="/event/{{participation.id}}">{{ participation.title }}</a> |  {{participation.start_time }}
+        <br />
+        {{ participation.content }}, lisännyt <a href="/user/{{ participation.username }}">{{ participation.username }}</a>
+    </p>
+    <p>
+        {% if participation.username == username %}
+        <a href="/edit/{{ participation.id }}">Muokkaa</a>  | 
+        <a href="/delete/{{ participation.id }}">Poista</a>
+        {% endif %}
+    </p>
+    <hr />
+{% endfor %}

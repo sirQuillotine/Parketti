@@ -27,6 +27,18 @@ def get_events():
              """
     return db.query(sql)
 
+def get_user_events(username):
+    sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
+             FROM events e WHERE e.username = ?"""
+    return db.query(sql, [username])
+
+def get_user_participations(username):
+    sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
+             FROM events e
+             JOIN event_participants ep ON e.id = ep.event_id
+             WHERE ep.username = ?"""
+    return db.query(sql, [username])
+
 def search_events(search):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
              FROM events e WHERE e.title LIKE ? OR e.content LIKE ?"""

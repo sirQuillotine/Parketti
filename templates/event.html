@@ -18,7 +18,7 @@
 
 <p>
     {{ event.content }}  <br/>
-    lisännyt {{ event.username }}
+    lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
 </p>
 
 <hr>
@@ -39,6 +39,6 @@
 
 {% for participant in participants %}
     <p>
-        {{ participant }}
+        <a href="/user/{{ participant }}">{{ participant }}</a>
     </p>
 {% endfor %}

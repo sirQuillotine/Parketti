@@ -59,6 +59,12 @@ def event_details(event_id):
             show_participation = False
     return render_template("event.html", event=event_e, styles=event_styles, participants=event_participants, show=show_participation, session=session)
 
+@app.route("/user/<username>")
+def user(username):
+    events = event.get_user_events(username)
+    participations = event.get_user_participations(username)
+    return render_template("user.html", events=events, participations=participations, username=username)
+
 
 
 @app.route("/edit/<int:event_id>", methods=["GET", "POST"])
