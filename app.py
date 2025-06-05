@@ -5,10 +5,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import event
 import secrets
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "ananas"
 
+@app.template_filter()
+def format_datetime(start_time):
+    date = datetime.strptime(start_time, "%Y-%m-%d")
+    return date.strftime("%d.%m.%Y")
 
 @app.route("/")
 def index():

@@ -1,10 +1,8 @@
 import db
 
 def add_event(title, content, start_time, username, styles):
-    dates = start_time.split("-")
-    formatted_date = dates[2] + "." + dates[1] + "." + dates[0]
     sql = "INSERT INTO events (title, content, start_time, username) VALUES (?, ?, ?, ?)"
-    db.execute(sql, [title, content, formatted_date, username])
+    db.execute(sql, [title, content, start_time, username])
     event_id = db.last_insert_id()
 
     sql = "INSERT INTO event_styles (event_id, style) VALUES (?, ?)"
