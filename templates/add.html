@@ -5,19 +5,19 @@
   
   <form action="/add" method="post">
     <p>
-      Tanssilavan nimi: <br />
+      <label for="title">Tanssilavan nimi:</label> <br />
       <input type="text" name="title" required/>
     </p>
     <p>
-      tapahtuman ajankohta: <br />
+      <label for="start_time">tapahtuman ajankohta:</label> <br />
       <input type="date" name="start_time" required/>
     </p>
     <p>
-      tapahtuman kuvaus: <br />
+      <label for="content">tapahtuman kuvaus:</label> <br />
       <textarea name="content" rows="5" cols="40" required></textarea>
     </p>
     <p>
-      tanssilajit: <br />
+      <label for="styles">tanssilajit:</label> <br />
       <input type="checkbox" name="styles" value="foksi" /> foksi
       <input type="checkbox" name="styles" value="fusku" /> fusku
       <input type="checkbox" name="styles" value="valssi" /> valssi

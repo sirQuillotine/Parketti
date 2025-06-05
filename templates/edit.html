@@ -1,20 +1,29 @@
-  <h2>Uusi tapahtuma</h2>
+  <h2>Muokkaa tapahtumaa</h2>
 
   <form action="/edit/{{ event.id }}" method="post">
-    <a href="/">Peruuta</a>
-    <hr>
     <p>
-      Tanssilavan nimi: <br />
-      <input type="text" name="title" value="{{event.title}}"/>
+      <label for="title">Tanssilavan nimi:</label> <br />
+      <input type="text" name="title" required/>
     </p>
     <p>
-      tapahtuman ajankohta: <br />
-      <textarea name="start_time" rows="5" cols="40">{{event.start_time}}</textarea>
+      <label for="start_time">tapahtuman ajankohta:</label> <br />
+      <input type="date" name="start_time" required/>
     </p>
     <p>
-      tapahtuman kuvaus: <br />
-      <textarea name="content" rows="5" cols="40">{{event.content}}</textarea>
+      <label for="content">tapahtuman kuvaus:</label> <br />
+      <textarea name="content" rows="5" cols="40" required></textarea>
+    </p>
+    <p>
+      <label for="styles">tanssilajit:</label> <br />
+      <input type="checkbox" name="styles" value="foksi" /> foksi
+      <input type="checkbox" name="styles" value="fusku" /> fusku
+      <input type="checkbox" name="styles" value="valssi" /> valssi
+      <input type="checkbox" name="styles" value="jive" /> jive
+      <input type="checkbox" name="styles" value="samba" /> samba
+      <input type="checkbox" name="styles" value="tango" /> tango
+    
     </p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+
     <input type="submit" value="Lähetä" />
   </form>
