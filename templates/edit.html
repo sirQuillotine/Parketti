@@ -1,17 +1,20 @@
   <h2>Muokkaa tapahtumaa</h2>
 
+    <a href="/">Peruuta</a>
+  <hr>
+
   <form action="/edit/{{ event.id }}" method="post">
     <p>
       <label for="title">Tanssilavan nimi:</label> <br />
-      <input type="text" name="title" required/>
+      <input type="text" name="title" value="{{event.title}}" required/>
     </p>
     <p>
       <label for="start_time">tapahtuman ajankohta:</label> <br />
-      <input type="date" name="start_time" required/>
+      <input type="date" name="start_time" value="{{event.title}}" required/>
     </p>
     <p>
       <label for="content">tapahtuman kuvaus:</label> <br />
-      <textarea name="content" rows="5" cols="40" required></textarea>
+      <textarea name="content" rows="5" cols="40" required>{{event.content}}</textarea>
     </p>
     <p>
       <label for="styles">tanssilajit:</label> <br />
