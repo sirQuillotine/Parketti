@@ -8,6 +8,11 @@
 <body>
   <h1>Parketti</h1>
   {% if session.username %}
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
   <p>
     Olet kirjautunut nimellä <a href="/user/{{ session.username }}">{{ session.username }}</a>
     <a href="/logout">Kirjaudu ulos</a>

@@ -1,9 +1,10 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, abort, request, session
+from flask import redirect, render_template, abort, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import event
+import secrets
 
 app = Flask(__name__)
 app.secret_key = "ananas"
@@ -26,10 +27,13 @@ def register():
     
 @app.route("/add", methods=["GET", "POST"])
 def add():
+    
     if request.method == "GET":
-        return render_template("add.html")
+        return render_template("add.html", session=session)
 
     if request.method == "POST":
+        check_csrf()
+
         title = request.form["title"]
         content = request.form["content"]
         start_time = request.form["start_time"]
@@ -46,11 +50,12 @@ def event_details(event_id):
     event_participants = event.get_event_participants(event_id)
 
     if request.method == "POST":
+        check_csrf()
+        if event_e["username"] != session["username"]:
+            abort(403)
         if session["username"] in event_participants:
-            print("poistetaan osallistuja")
             event.delete_participant(event_id, session["username"])
         else:
-            print("lisätään osallistuja")
             event.add_participants(event_id, session["username"])
         event_participants = event.get_event_participants(event_id)
 
@@ -69,6 +74,7 @@ def user(username):
 
 @app.route("/edit/<int:event_id>", methods=["GET", "POST"])
 def edit_event(event_id):
+    
     event_e = event.get_event(event_id)
     if event_e["username"] != session["username"]:
         abort(403)
@@ -77,6 +83,7 @@ def edit_event(event_id):
         return render_template("edit.html", event=event_e)
     
     if request.method == "POST":
+        check_csrf()
         title = request.form["title"]
         content = request.form["content"]
         start_time = request.form["start_time"]
@@ -85,6 +92,7 @@ def edit_event(event_id):
 
 @app.route("/delete/<int:event_id>", methods=["GET", "POST"])
 def delete_event(event_id):
+    
     event_r = event.get_event(event_id)
     if event_r["username"] != session["username"]:
         abort(403)
@@ -93,6 +101,9 @@ def delete_event(event_id):
         return render_template("delete.html", event=event_r)
 
     if request.method == "POST":
+        
+        check_csrf()
+
         if "continue" in request.form:
             event.delete_event(event_r["id"])
         return redirect("/")
@@ -112,6 +123,7 @@ def login():
 
         if check_password_hash(password_hash, password):
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             return "VIRHE: väärä tunnus tai salasana"
@@ -127,13 +139,31 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        flash("VIRHE: salasanat eivät ole samat")
+        return redirect("/register") 
     password_hash = generate_password_hash(password1)
-
+    
+    if not username.isalpha():
+        flash("VIRHE: käyttäjätunnus saa sisältää vain kirjaimia") 
+        return redirect("/register")
+    if len(username) < 3 or len(username) > 20:
+        flash("VIRHE: käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä") 
+        return redirect("/register")
+    if len(password1) < 3:
+        flash("VIRHE: salasanan tulee olla vähintään 3 merkkiä pitkä") 
+        return redirect("/register")
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        flash("VIRHE: tunnus on jo varattu") 
+        return redirect("/register")
+    flash("Käyttäjä luotu onnistuneesti")
+    return redirect("/register")
 
-    return redirect("/")
+
+def check_csrf():
+    if "csrf_token" not in request.form:
+        abort(403)
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)       

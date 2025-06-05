@@ -8,6 +8,13 @@
 <body>
         <a href="/">Etusivu</a>
     <hr>
+
+  {% for message in get_flashed_messages() %}
+  <div class="info">
+    {{ message }}
+  </div>
+  {% endfor %}
+
   <form action="/create" method="post">
     <p>
       Tunnus: <br />

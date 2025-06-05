@@ -27,12 +27,14 @@
 
 {% if session.username and show==True%}
 <form action="/event/{{event.id}}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Ilmoittaudu tapahtumaan" />
 </form>
 {% endif %}
 
 {% if session.username and show==False%}
 <form action="/event/{{event.id}}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Perun ilmoittautuminen" />
 </form>
 {% endif %}
