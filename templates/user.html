@@ -4,7 +4,7 @@
 <h1>{{username}}</h1>
 
 <p>
-    Käyttäjä on lisännyt {{events | count }} tapahtumaa ja osallistuu {{participations | count }} tapahtumaan.
+    Käyttäjä on lisännyt {{event_count }} tapahtumaa ja osallistuu {{participations | count }} tapahtumaan.
 </p>
 
 <hr>
@@ -30,6 +30,12 @@
     </p>
     <hr />
 {% endfor %}
+    <p>
+    <a href="/user/{{username}}/{{ page - 1 }}">&lt;&lt;</a>
+    Sivu {{ page }}/{{ page_count }}
+    <a href="/user/{{username}}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+
 
 <h2>Käyttäjä osallistumiset</h2>
 

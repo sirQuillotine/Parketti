@@ -1,7 +1,7 @@
 import sqlite3
 import secrets
 from datetime import datetime
-import sys
+import math
 
 from flask import Flask
 from flask import redirect, render_template, abort, request, session, flash
@@ -29,13 +29,25 @@ def show_lines(content):
     return markupsafe.Markup(content)
 
 @app.route("/")
-def index():
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 20
+    event_count = event.get_event_count()
+    page_count = math.ceil(event_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+    
     query = request.args.get("query")
     if query:
-        events = event.search_events(query)
+        events = event.search_events(query, page, page_size)
     else:
-        events = event.get_events()
-    return render_template("index.html", query=query, events=events, session=session)
+        events = event.get_events(page, page_size)
+    return render_template("index.html", query=query, events=events, page=page,
+                            page_count=page_count, session=session)
 
 @app.route("/register")
 def register():
@@ -66,8 +78,6 @@ def event_details(event_id):
 
     if request.method == "POST":
         check_csrf()
-        if event_e["username"] != session["username"]:
-            abort(403)
         if session["username"] in event_participants:
             event.delete_participant(event_id, session["username"])
         else:
@@ -82,10 +92,22 @@ def event_details(event_id):
                             session=session)
 
 @app.route("/user/<username>")
-def user(username):
-    events = event.get_user_events(username)
+@app.route("/user/<username>/<int:page>")
+def user(username, page=1):
+    page_size = 5
+    event_count = event.get_user_event_count(username)
+    page_count = math.ceil(event_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    events = event.get_user_events(username, page, page_size)
     participations = event.get_user_participations(username)
-    return render_template("user.html", events=events,
+    return render_template("user.html", events=events, event_count=event_count, page=page,
+                            page_count=page_count,
                             participations=participations, username=username)
 
 
