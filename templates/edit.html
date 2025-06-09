@@ -27,6 +27,11 @@
     
     </p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    {% if next_page %}
+    <input type="hidden" name="next_page" value="{{ next_page }}" />
+    {% else %}
+    <input type="hidden" name="next_page" value="/" />
+    {% endif %}
 
     <input type="submit" value="Lähetä" />
   </form>

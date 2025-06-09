@@ -58,7 +58,7 @@
         <p>
             <a href="/event/{{event.id}}">{{ event.title }}</a> |  {{event.start_time | format_datetime}}
             <br />
-            {{ event.content }}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
+            {{ event.content | show_lines}}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
         </p>
         <p>
             {% if event.username == session.username %}

@@ -17,11 +17,17 @@
 </p>
 
 <p>
-    {{ event.content }}  <br/>
+    {{ event.content | show_lines }}  <br/>
     lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
 </p>
 
+{% if event.username == session.username %}
+<a href="/edit/{{ event.id }}">Muokkaa</a>  | 
+<a href="/delete/{{ event.id }}">Poista</a>
+{% endif %}
+
 <hr>
+
 
 <h2>Tapahtumaan osallistuu:</h2>
 

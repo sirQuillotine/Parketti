@@ -1,11 +1,18 @@
 import sqlite3
+import secrets
+from datetime import datetime
+import sys
+
 from flask import Flask
 from flask import redirect, render_template, abort, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+import markupsafe
+
+
 import db
 import event
-import secrets
-from datetime import datetime
+
+
 
 app = Flask(__name__)
 app.secret_key = "ananas"
@@ -14,6 +21,12 @@ app.secret_key = "ananas"
 def format_datetime(start_time):
     date = datetime.strptime(start_time, "%Y-%m-%d")
     return date.strftime("%d.%m.%Y")
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 @app.route("/")
 def index():
@@ -28,11 +41,8 @@ def index():
 def register():
     return render_template("register.html")
 
-
-    
 @app.route("/add", methods=["GET", "POST"])
 def add():
-    
     if request.method == "GET":
         return render_template("add.html", session=session)
 
@@ -43,7 +53,7 @@ def add():
         content = request.form["content"]
         start_time = request.form["start_time"]
         styles = request.form.getlist("styles")
-        event_id = event.add_event(title, content, start_time, session["username"], styles)
+        event.add_event(title, content, start_time, session["username"], styles)
         return redirect("/")
 
 
@@ -67,71 +77,72 @@ def event_details(event_id):
     if "username" in session.keys():
         if session["username"] in event_participants:
             show_participation = False
-    return render_template("event.html", event=event_e, styles=event_styles, participants=event_participants, show=show_participation, session=session)
+    return render_template("event.html", event=event_e, styles=event_styles,
+                            participants=event_participants, show=show_participation,
+                            session=session)
 
 @app.route("/user/<username>")
 def user(username):
     events = event.get_user_events(username)
     participations = event.get_user_participations(username)
-    return render_template("user.html", events=events, participations=participations, username=username)
+    return render_template("user.html", events=events,
+                            participations=participations, username=username)
 
 
 
 @app.route("/edit/<int:event_id>", methods=["GET", "POST"])
 def edit_event(event_id):
-    
     event_e = event.get_event(event_id)
     if event_e["username"] != session["username"]:
         abort(403)
 
     if request.method == "GET":
-        return render_template("edit.html", event=event_e)
-    
+        return render_template("edit.html", event=event_e, session=session, next_page=request.referrer)
+
     if request.method == "POST":
         check_csrf()
         title = request.form["title"]
         content = request.form["content"]
         start_time = request.form["start_time"]
-        event.update_event(event_id, title, content, start_time)
-        return redirect("/")
+        styles = request.form.getlist("styles")
+        next_page = request.form["next_page"]
+        event.update_event(event_id, title, content, start_time, styles)
+        return redirect(next_page)
 
 @app.route("/delete/<int:event_id>", methods=["GET", "POST"])
 def delete_event(event_id):
-    
     event_r = event.get_event(event_id)
     if event_r["username"] != session["username"]:
         abort(403)
 
     if request.method == "GET":
-        return render_template("delete.html", event=event_r)
+        return render_template("delete.html", event=event_r, session=session, next_page=request.referrer)
 
     if request.method == "POST":
         
         check_csrf()
-
         if "continue" in request.form:
             event.delete_event(event_r["id"])
-        return redirect("/")
+        next_page = request.form["next_page"]
+        return redirect(next_page)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        
+
         sql = "SELECT password_hash FROM users WHERE username = ?"
         password_hash = db.query(sql, [username])[0][0]
-
-        if check_password_hash(password_hash, password):
-            session["username"] = username
-            session["csrf_token"] = secrets.token_hex(16)
-            return redirect("/")
-        else:
+        if not check_password_hash(password_hash, password):
             return "VIRHE: väärä tunnus tai salasana"
+        session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
+        return redirect("/")
 
 @app.route("/logout")
 def logout():
@@ -145,23 +156,23 @@ def create():
     password2 = request.form["password2"]
     if password1 != password2:
         flash("VIRHE: salasanat eivät ole samat")
-        return redirect("/register") 
+        return redirect("/register")
     password_hash = generate_password_hash(password1)
-    
+
     if not username.isalpha():
-        flash("VIRHE: käyttäjätunnus saa sisältää vain kirjaimia") 
+        flash("VIRHE: käyttäjätunnus saa sisältää vain kirjaimia")
         return redirect("/register")
     if len(username) < 3 or len(username) > 20:
-        flash("VIRHE: käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä") 
+        flash("VIRHE: käyttäjätunnuksen tulee olla 3-20 merkkiä pitkä")
         return redirect("/register")
     if len(password1) < 3:
-        flash("VIRHE: salasanan tulee olla vähintään 3 merkkiä pitkä") 
+        flash("VIRHE: salasanan tulee olla vähintään 3 merkkiä pitkä")
         return redirect("/register")
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
-        flash("VIRHE: tunnus on jo varattu") 
+        flash("VIRHE: tunnus on jo varattu")
         return redirect("/register")
     flash("Käyttäjä luotu onnistuneesti")
     return redirect("/register")
@@ -171,4 +182,4 @@ def check_csrf():
     if "csrf_token" not in request.form:
         abort(403)
     if request.form["csrf_token"] != session["csrf_token"]:
-        abort(403)       
+        abort(403)

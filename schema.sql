@@ -14,7 +14,7 @@ CREATE TABLE events (
 
 CREATE TABLE event_styles (
     id INTEGER PRIMARY KEY,
-    event_id INTEGER REFERENCES events(id),
+    event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
     style TEXT
 );
 

@@ -47,9 +47,16 @@ def get_event(event_id):
              FROM events e WHERE e.id = ?"""
     return db.query(sql, [event_id])[0]
 
-def update_event(event_id, title, content, start_time):
+def update_event(event_id, title, content, start_time, styles):
     sql = """UPDATE events SET title = ?, content = ?, start_time = ? WHERE id = ?"""
     db.execute(sql, [title, content, start_time, event_id])
+
+    sql = """DELETE FROM event_styles WHERE event_id = ?"""
+    db.execute(sql, [event_id])
+
+    sql = """INSERT INTO event_styles (event_id, style) VALUES (?, ?)"""
+    for style in styles:
+        db.execute(sql, [event_id, style])
 
 def delete_event(event_id):
     sql = """DELETE FROM events WHERE id = ?"""
@@ -66,4 +73,3 @@ def add_participants(event_id, username):
 def delete_participant(event_id, username):
     sql = """DELETE FROM event_participants WHERE event_id = ? AND username = ?"""
     db.execute(sql, [event_id, username])
-
