@@ -23,3 +23,7 @@ CREATE TABLE event_participants (
     event_id INTEGER REFERENCES events(id),
     username TEXT
 );
+
+CREATE INDEX idx_event_participants ON event_participants (event_id);
+CREATE INDEX idx_username ON events (username);
+CREATE INDEX idx_username_part ON event_participants (username);

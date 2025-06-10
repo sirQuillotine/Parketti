@@ -28,3 +28,14 @@ Voit käynnistää sovelluksen näin:
 ```
 $ flask run
 ```
+
+##Suuren tietomäärän käsittely
+
+Tietokanta täytettiin seed.py tiedoston mukaisella tavalla. Sivutus tekee etusivun lataamisesta sujuvaa. Käyttäjäsivu kuitenkin hidastelee, koska tietokannasta haetaan käyttäjänimeä vastaavat tapahtumat sekä osallistumiset.
+
+```
+CREATE INDEX idx_event_participants ON event_participants (event_id);
+CREATE INDEX idx_username ON events (username);
+CREATE INDEX idx_username_part ON event_participants (username);
+```
+Käyttäjäsivun latausnopeus ennen indeksöintiä oli noin 0,22 sekuntia. Indesöinnin jälkeen latausnopeus oli 0,8 sekuntia. Etusivuun indeksöinti vaikutti sivutuksen jälkeen enää alle millisekuntin verran.

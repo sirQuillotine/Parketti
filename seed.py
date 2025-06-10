@@ -24,10 +24,13 @@ for i in range(1, user_count + 1):
                ["user" + str(i)])
     
 print("Users added!")
+styles = ["foksi", "fusku", "valssi", "jive", "samba", "tango"]
 
 for i in range(1, event_count + 1):
     db.execute("INSERT INTO events (title, content, start_time, username) VALUES (?, ?, ?, ?)",
                ["event" + str(i), content, "2023-10-01", "user" + str(random.randint(1, user_count))])
+    for style in random.sample(styles, random.randint(1, len(styles))):
+        db.execute("INSERT INTO event_styles (event_id, style) VALUES (?, ?)", [i, style])
     if i % 1000 == 0:
         print(f"Events added: {i}")
     for j in range(1, participant_count + 1):

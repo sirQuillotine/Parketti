@@ -2,9 +2,10 @@ import sqlite3
 import secrets
 from datetime import datetime
 import math
+import time
 
 from flask import Flask
-from flask import redirect, render_template, abort, request, session, flash
+from flask import redirect, render_template, abort, request, session, flash, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import markupsafe
 
@@ -91,24 +92,44 @@ def event_details(event_id):
                             participants=event_participants, show=show_participation,
                             session=session)
 
-@app.route("/user/<username>")
-@app.route("/user/<username>/<int:page>")
-def user(username, page=1):
+@app.route("/user/<username>/")
+def user(username):
+    page1 = request.args.get("own")
+    page2 = request.args.get("part")
+
+    if not page1:
+        page1 = 1
+    if not page2:
+        page2 = 1
+
+    try:
+        page1 = int(page1)
+        page2 = int(page2)
+    except:
+        page1 = 1
+        page2 = 1
+
     page_size = 5
+
     event_count = event.get_user_event_count(username)
-    page_count = math.ceil(event_count / page_size)
-    page_count = max(page_count, 1)
+    page1_count = math.ceil(event_count / page_size)
+    page1_count = max(page1_count, 1)
 
-    if page < 1:
-        return redirect("/1")
-    if page > page_count:
-        return redirect("/" + str(page_count))
+    participation_count = event.get_user_participation_count(username)
+    page2_count = math.ceil(participation_count / page_size)
+    page2_count = max(page2_count, 1)
 
-    events = event.get_user_events(username, page, page_size)
-    participations = event.get_user_participations(username)
-    return render_template("user.html", events=events, event_count=event_count, page=page,
-                            page_count=page_count,
-                            participations=participations, username=username)
+    if page1 < 1 or page1 > page1_count or page2 < 1 or page2 > page2_count:
+        return redirect("/user/" + username + "?own=1")
+
+    events = event.get_user_events(username, page1, page_size)
+    participations = event.get_user_participations(username, page2, page_size)
+    return render_template("user.html", events=events, event_count=event_count,
+                            page1=page1,
+                            page1_count=page1_count,
+                            participations=participations, participation_count=participation_count,
+                            page2=page2, page2_count=page2_count,
+                            username=username)
 
 
 
@@ -205,3 +226,13 @@ def check_csrf():
         abort(403)
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
+
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response

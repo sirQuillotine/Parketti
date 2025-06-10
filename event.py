@@ -30,12 +30,12 @@ def get_user_events(username, page, page_size):
              FROM events e WHERE e.username = ? LIMIT ? OFFSET ?"""
     return db.query(sql, [username, page_size, (page - 1) * page_size])
 
-def get_user_participations(username):
+def get_user_participations(username, page, page_size):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
              FROM events e
              JOIN event_participants ep ON e.id = ep.event_id
-             WHERE ep.username = ?"""
-    return db.query(sql, [username])
+             WHERE ep.username = ? LIMIT ? OFFSET ?"""
+    return db.query(sql, [username,  page_size, (page - 1) * page_size])
 
 def search_events(search, page, page_size):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
@@ -53,6 +53,12 @@ def get_event_count():
 
 def get_user_event_count(username):
     sql = """SELECT COUNT(*) FROM events WHERE username = ?"""
+    return db.query(sql, [username])[0][0]
+
+def get_user_participation_count(username):
+    sql = """SELECT COUNT(*) FROM event_participants ep
+             JOIN events e ON ep.event_id = e.id
+             WHERE ep.username = ?"""
     return db.query(sql, [username])[0][0]
 
 def update_event(event_id, title, content, start_time, styles):
