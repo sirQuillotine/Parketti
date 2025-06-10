@@ -1,80 +1,52 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Parketti</title>
-</head>
+{% block title %}Parketti{% endblock %}
 
-<body>
-  <h1>Parketti</h1>
-  {% if session.username %}
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
+{% block content %}
+
+  
+  <p>
+      <h2>Tapahtumat</h2>
+      {% if session.username %}
+      <a href="/add">Lisää uusi tapahtuma</a>
+      {% endif %}
+  </p>
+  
+  <form action="/" method="get">
+  <p>
+    {% if query %}
+    <input type="text" name="query" value="{{ query }}" />
+    {% else %}
+    <input type="text" name="query" placeholder="Hae tapahtumaa..." />
+    {% endif %}
+    <input type="submit" value="Hae" />
+  </p>
+</form>
+
+<hr>
+  {% if not events %}
+  <p>Ei tapahtumia</p>
+  {% endif %}
+
+  {% for event in events %}
+      <p class="event">
+          <a href="/event/{{event.id}}" class="title">{{ event.title }}</a> |  {{event.start_time | format_datetime}}
+          <br />
+          {{ event.content | show_lines}}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
+      </p>
+      <p>
+          {% if event.username == session.username %}
+          <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
+          <a href="/delete/{{ event.id }}">Poista</a>
+          {% endif %}
+      </p>
+      <hr />
   {% endfor %}
   <p>
-    Olet kirjautunut nimellä <a href="/user/{{ session.username }}">{{ session.username }}</a>
-    <a href="/logout">Kirjaudu ulos</a>
+  <a href="/{{ page - 1 }}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/{{ page + 1 }}">&gt;&gt;</a>
   </p>
+  <hr />
+{% endblock %}
 
-    {% else %}
-  <p>
-    <a href="/login">Kirjaudu</a>
-    <a href="/register">Rekisteröidy</a>
-  </p>
-{% endif %}
-  <hr>
-    
-    <p>
-        <h2>Tapahtumat</h2>
-        {% if session.username %}
-        <a href="/add">Lisää uusi tapahtuma</a>
-        {% endif %}
-
-    </p>
-    
-
-    <form action="/" method="get">
-    <p>
-      {% if query %}
-      <input type="text" name="query" value="{{ query }}" />
-      {% else %}
-      <input type="text" name="query" placeholder="Hae tapahtumaa..." />
-      {% endif %}
-      <input type="submit" value="Hae" />
-    </p>
-    
-  </form>
-
-    
-  <hr>
-    {% if not events %}
-    <p>Ei tapahtumia</p>
-    {% endif %}
-
-
-    {% for event in events %}
-        <p>
-            <a href="/event/{{event.id}}">{{ event.title }}</a> |  {{event.start_time | format_datetime}}
-            <br />
-            {{ event.content | show_lines}}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
-        </p>
-        <p>
-            {% if event.username == session.username %}
-            <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
-            <a href="/delete/{{ event.id }}">Poista</a>
-            {% endif %}
-        </p>
-        <hr />
-    {% endfor %}
-    <p>
-    <a href="/{{ page - 1 }}">&lt;&lt;</a>
-    Sivu {{ page }}/{{ page_count }}
-    <a href="/{{ page + 1 }}">&gt;&gt;</a>
-    </p>
-    <hr />
-</body>
-
-
-</html>
