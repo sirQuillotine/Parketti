@@ -63,8 +63,18 @@ def add():
         check_csrf()
 
         title = request.form["title"]
+        if not title or len(title) > 100:
+            abort(403)
         content = request.form["content"]
+        if not content or len(content) > 1000:
+            abort(403)
         start_time = request.form["start_time"]
+        if not start_time:
+            abort(403)
+        try:    
+            datetime.strptime(start_time, "%Y-%m-%d")
+        except ValueError:
+            abort(403)
         styles = request.form.getlist("styles")
         event.add_event(title, content, start_time, session["username"], styles)
         return redirect("/")
@@ -145,8 +155,18 @@ def edit_event(event_id):
     if request.method == "POST":
         check_csrf()
         title = request.form["title"]
+        if not title or len(title) > 100:
+            abort(403)
         content = request.form["content"]
+        if not content or len(content) > 1000:
+            abort(403)
         start_time = request.form["start_time"]
+        if not start_time:
+            abort(403)
+        try:    
+            datetime.strptime(start_time, "%Y-%m-%d")
+        except ValueError:
+            abort(403)
         styles = request.form.getlist("styles")
         next_page = request.form["next_page"]
         event.update_event(event_id, title, content, start_time, styles)

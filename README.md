@@ -29,7 +29,7 @@ Voit käynnistää sovelluksen näin:
 $ flask run
 ```
 
-##Suuren tietomäärän käsittely
+## Suuren tietomäärän käsittely
 
 Tietokanta täytettiin seed.py tiedoston mukaisella tavalla. Sivutus tekee etusivun lataamisesta sujuvaa. Käyttäjäsivu kuitenkin hidastelee, koska tietokannasta haetaan käyttäjänimeä vastaavat tapahtumat sekä osallistumiset.
 
