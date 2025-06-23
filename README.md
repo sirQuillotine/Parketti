@@ -38,4 +38,4 @@ CREATE INDEX idx_event_participants ON event_participants (event_id);
 CREATE INDEX idx_username ON events (username);
 CREATE INDEX idx_username_part ON event_participants (username);
 ```
-Käyttäjäsivun latausnopeus ennen indeksöintiä oli noin 0,22 sekuntia. Indesöinnin jälkeen latausnopeus oli 0,8 sekuntia. Etusivuun indeksöinti vaikutti sivutuksen jälkeen enää alle millisekuntin verran.
+Käyttäjäsivun latausnopeus ennen indeksöintiä oli noin 0,22 sekuntia. Indesöinnin jälkeen latausnopeus oli 0,08 sekuntia. Etusivuun indeksöinti vaikutti sivutuksen jälkeen enää alle millisekuntin verran.
