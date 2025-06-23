@@ -4,15 +4,15 @@
 
 {% block content %}
 
-  
-  <p>
-      <h2>Tapahtumat</h2>
-      {% if session.username %}
-      <a href="/add">Lisää uusi tapahtuma</a>
-      {% endif %}
-  </p>
-  
-  <form action="/" method="get">
+
+<p>
+<h2>Tapahtumat</h2>
+{% if session.username %}
+<a href="/add">Lisää uusi tapahtuma</a>
+{% endif %}
+</p>
+
+<form action="/" method="get">
   <p>
     {% if query %}
     <input type="text" name="query" value="{{ query }}" />
@@ -24,29 +24,28 @@
 </form>
 
 <hr>
-  {% if not events %}
-  <p>Ei tapahtumia</p>
-  {% endif %}
+{% if not events %}
+<p>Ei tapahtumia</p>
+{% endif %}
 
-  {% for event in events %}
-      <p class="event">
-          <a href="/event/{{event.id}}" class="title">{{ event.title }}</a> |  {{event.start_time | format_datetime}}
-          <br />
-          {{ event.content | show_lines}}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
-      </p>
-      <p>
-          {% if event.username == session.username %}
-          <a href="/edit/{{ event.id }}">Muokkaa</a>  | 
-          <a href="/delete/{{ event.id }}">Poista</a>
-          {% endif %}
-      </p>
-      <hr />
-  {% endfor %}
-  <p>
+{% for event in events %}
+<p class="event">
+  <a href="/event/{{event.id}}" class="title">{{ event.title }}</a> | {{event.start_time | format_datetime}}
+  <br />
+  {{ event.content | show_lines}}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
+</p>
+<p>
+  {% if event.username == session.username %}
+  <a href="/edit/{{ event.id }}">Muokkaa</a> |
+  <a href="/delete/{{ event.id }}">Poista</a>
+  {% endif %}
+</p>
+<hr />
+{% endfor %}
+<p>
   <a href="/{{ page - 1 }}">&lt;&lt;</a>
   Sivu {{ page }}/{{ page_count }}
   <a href="/{{ page + 1 }}">&gt;&gt;</a>
-  </p>
-  <hr />
+</p>
+<hr />
 {% endblock %}
-

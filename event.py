@@ -45,7 +45,8 @@ def get_user_participations(username, page, page_size):
 def search_events(search, page, page_size):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username
              FROM events e WHERE e.title LIKE ? OR e.content LIKE ? LIMIT ? OFFSET ?"""
-    return db.query(sql, ["%" + search + "%", "%" + search + "%", page_size, (page - 1) * page_size])
+    return db.query(sql, ["%" + search + "%",
+                           "%" + search + "%", page_size, (page - 1) * page_size])
 
 def get_event(event_id):
     sql = """SELECT e.id, e.title, e.content, e.start_time, e.username

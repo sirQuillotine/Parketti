@@ -1,38 +1,38 @@
-  {% extends "layout.html" %}
+{% extends "layout.html" %}
 
 {% block title %}Parketti{% endblock %}
 
 {% block content %}
-  
-  <h2>Uusi tapahtuma</h2>
 
-  <a href="/">Peruuta</a>
-  <hr>
-  
-  <form action="/add" method="post">
-    <p>
-      <label for="title">Tanssilavan nimi:</label> <br />
-      <input type="text" name="title" required/>
-    </p>
-    <p>
-      <label for="start_time">tapahtuman ajankohta:</label> <br />
-      <input type="date" name="start_time" required/>
-    </p>
-    <p>
-      <label for="content">tapahtuman kuvaus:</label> <br />
-      <textarea name="content" rows="5" cols="40" required></textarea>
-    </p>
-    <p>
-      <label for="styles">tanssilajit:</label> <br />
-      {% for style in styles %}
-        <input type="checkbox" name="styles" value="{{style}}" /> {{style}}
-      {% endfor %}
+<h2>Uusi tapahtuma</h2>
 
-    
-    </p>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+<a href="/">Peruuta</a>
+<hr>
 
-    <input type="submit" value="Lähetä" />
-  </form>
+<form action="/add" method="post">
+  <p>
+    <label for="title">Tanssilavan nimi:</label> <br />
+    <input type="text" name="title" required />
+  </p>
+  <p>
+    <label for="start_time">tapahtuman ajankohta:</label> <br />
+    <input type="date" name="start_time" required />
+  </p>
+  <p>
+    <label for="content">tapahtuman kuvaus:</label> <br />
+    <textarea name="content" rows="5" cols="40" required></textarea>
+  </p>
+  <p>
+    <label for="styles">tanssilajit:</label> <br />
+    {% for style in styles %}
+    <input type="checkbox" name="styles" value="{{style}}" /> {{style}}
+    {% endfor %}
 
-  {% endblock %}
+
+  </p>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+
+  <input type="submit" value="Lähetä" />
+</form>
+
+{% endblock %}

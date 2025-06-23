@@ -41,7 +41,7 @@ def index(page=1):
         return redirect("/1")
     if page > page_count:
         return redirect("/" + str(page_count))
-    
+
     query = request.args.get("query")
     if query:
         events = event.search_events(query, page, page_size)
@@ -74,7 +74,7 @@ def add():
         start_time = request.form["start_time"]
         if not start_time:
             abort(403)
-        try:    
+        try:
             datetime.strptime(start_time, "%Y-%m-%d")
         except ValueError:
             abort(403)
@@ -118,7 +118,7 @@ def user(username):
     try:
         page1 = int(page1)
         page2 = int(page2)
-    except:
+    except ValueError:
         page1 = 1
         page2 = 1
 
@@ -154,7 +154,8 @@ def edit_event(event_id):
 
     if request.method == "GET":
         styles = event.get_styles()
-        return render_template("edit.html", event=event_e, session=session, next_page=request.referrer, styles=styles)
+        return render_template("edit.html", event=event_e, session=session,
+                                next_page=request.referrer, styles=styles)
 
     if request.method == "POST":
         check_csrf()
@@ -167,7 +168,7 @@ def edit_event(event_id):
         start_time = request.form["start_time"]
         if not start_time:
             abort(403)
-        try:    
+        try:
             datetime.strptime(start_time, "%Y-%m-%d")
         except ValueError:
             abort(403)
@@ -183,16 +184,15 @@ def delete_event(event_id):
         abort(403)
 
     if request.method == "GET":
-        return render_template("delete.html", event=event_r, session=session, next_page=request.referrer)
+        return render_template("delete.html", event=event_r,
+                                session=session, next_page=request.referrer)
 
     if request.method == "POST":
-        
         check_csrf()
         if "continue" in request.form:
             event.delete_event(event_r["id"])
         next_page = request.form["next_page"]
         return redirect(next_page)
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

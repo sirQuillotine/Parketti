@@ -6,25 +6,25 @@
 
 
 
-  {% for message in get_flashed_messages() %}
-  <div class="info">
-    {{ message }}
-  </div>
-  {% endfor %}
+{% for message in get_flashed_messages() %}
+<div class="info">
+  {{ message }}
+</div>
+{% endfor %}
 
-  <form action="/create" method="post">
-    <p>
-      <label for="username">Tunnus:</label> <br />
-      <input type="text" name="username" required/>
-    </p>
-    <p>
-      <label for="password1">Salasana:</label> <br />
-      <input type="password" name="password1" required/>
-    </p>
-    <p>
-      <label for="password2">Salasana uudestaan:</label> <br />
-      <input type="password" name="password2" required/>
-    </p>
-    <input type="submit" value="Luo tunnus" />
-  </form>
+<form action="/create" method="post">
+  <p>
+    <label for="username">Tunnus:</label> <br />
+    <input type="text" name="username" required />
+  </p>
+  <p>
+    <label for="password1">Salasana:</label> <br />
+    <input type="password" name="password1" required />
+  </p>
+  <p>
+    <label for="password2">Salasana uudestaan:</label> <br />
+    <input type="password" name="password2" required />
+  </p>
+  <input type="submit" value="Luo tunnus" />
+</form>
 {% endblock %}

@@ -5,26 +5,26 @@
 {% block content %}
 
 
-    <a href="/">Etusivu</a>
-    <hr>
-  {% if session.username %}
+<a href="/">Etusivu</a>
+<hr>
+{% if session.username %}
+<p>
+  Olet kirjautunut nimellä {{ session.username }}
+</p>
+<p>
+  <a href="/logout">Kirjaudu ulos</a>
+</p>
+{% else %}
+<form action="/login" method="post">
   <p>
-    Olet kirjautunut nimellä {{ session.username }}
+    <label for="username">Tunnus:</label><br />
+    <input type="text" name="username" required />
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
+    <label for="password">Salasana:</label> <br />
+    <input type="password" name="password" required />
   </p>
-  {% else %}
-  <form action="/login" method="post">
-    <p>
-      <label for="username">Tunnus:</label><br />
-      <input type="text" name="username" required/>
-    </p>
-    <p>
-      <label for="password">Salasana:</label> <br />
-      <input type="password" name="password" required/>
-    </p>
-    <input type="submit" value="Kirjaudu" />
-  </form>
-  {% endif %}
+  <input type="submit" value="Kirjaudu" />
+</form>
+{% endif %}
 {% endblock %}

@@ -1,22 +1,22 @@
-  {% extends "layout.html" %}
+{% extends "layout.html" %}
 
 {% block title %}Parketti{% endblock %}
 
 {% block content %}
-  
-  <form action="/delete/{{ event.id }}" method="post">
-    <p>
-      Haluatko varmasti poistaa tapahtuman?
-    </p>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    {% if next_page %}
-    <input type="hidden" name="next_page" value="{{ next_page }}" />
-    {% else %}
-    <input type="hidden" name="next_page" value="/" />
-    {% endif %}
 
-    <input type="submit" name="continue" value="Jatka" />
-    <input type="submit" name="cancel" value="Peruuta" />
-  </form>
+<form action="/delete/{{ event.id }}" method="post">
+  <p>
+    Haluatko varmasti poistaa tapahtuman?
+  </p>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  {% if next_page %}
+  <input type="hidden" name="next_page" value="{{ next_page }}" />
+  {% else %}
+  <input type="hidden" name="next_page" value="/" />
+  {% endif %}
 
-  {% endblock %}
+  <input type="submit" name="continue" value="Jatka" />
+  <input type="submit" name="cancel" value="Peruuta" />
+</form>
+
+{% endblock %}
