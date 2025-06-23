@@ -21,7 +21,7 @@
 
 {% for event in events %}
 <p>
-    <a href="/event/{{event.id}}">{{ event.title }}</a> | {{event.start_time }}
+    <a href="/event/{{event.id}}">{{ event.title }}</a> | {{event.start_time | format_datetime}}
     <br />
     {{ event.content }}, lisännyt <a href="/user/{{ event.username }}">{{ event.username }}</a>
 </p>
@@ -49,7 +49,7 @@
 
 {% for participation in participations %}
 <p>
-    <a href="/event/{{participation.id}}">{{ participation.title }}</a> | {{participation.start_time }}
+    <a href="/event/{{participation.id}}">{{ participation.title }}</a> | {{participation.start_time | format_datetime}}
     <br />
     {{ participation.content }}, lisännyt <a href="/user/{{ participation.username }}">{{ participation.username }}</a>
 </p>

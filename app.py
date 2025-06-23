@@ -179,7 +179,6 @@ def edit_event(event_id):
     event_e = event.get_event(event_id)
     if event_e["username"] != session["username"]:
         abort(403)
-
     if request.method == "GET":
         styles = event.get_styles()
         return render_template("edit.html", event=event_e, session=session,
@@ -220,7 +219,8 @@ def delete_event(event_id):
         if "continue" in request.form:
             event.delete_event(event_r["id"])
         next_page = request.form["next_page"]
-        return redirect(next_page)
+        print("next_page:", next_page.split("/")[-2:])
+        return redirect(next_page) if "/" + next_page.split("/")[-2] + "/" + next_page.split("/")[-1] != "/event/" + str(event_id) else redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
