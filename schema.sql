@@ -18,6 +18,11 @@ CREATE TABLE event_styles (
     style TEXT
 );
 
+CREATE TABLE styles (
+    id INTEGER PRIMARY KEY,
+    style TEXT
+);
+
 CREATE TABLE event_participants (
     id INTEGER PRIMARY KEY,
     event_id INTEGER REFERENCES events(id),

@@ -18,12 +18,9 @@
     </p>
     <p>
       <label for="styles">tanssilajit:</label> <br />
-      <input type="checkbox" name="styles" value="foksi" /> foksi
-      <input type="checkbox" name="styles" value="fusku" /> fusku
-      <input type="checkbox" name="styles" value="valssi" /> valssi
-      <input type="checkbox" name="styles" value="jive" /> jive
-      <input type="checkbox" name="styles" value="samba" /> samba
-      <input type="checkbox" name="styles" value="tango" /> tango
+      {% for style in styles %}
+        <input type="checkbox" name="styles" value="{{style}}" /> {{style}}
+      {% endfor %}
     
     </p>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />

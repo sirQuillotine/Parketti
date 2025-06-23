@@ -10,6 +10,11 @@ def add_event(title, content, start_time, username, styles):
         db.execute(sql, [event_id, style])
     return event_id
 
+def get_styles():
+    sql = """SELECT s.style FROM styles s"""
+    result = db.query(sql)
+    return [row[0] for row in result] if result else []
+
 def get_event_styles(event_id):
     sql = """SELECT s.id, s.style FROM event_styles s where s.event_id = ?"""
     return db.query(sql, [event_id])

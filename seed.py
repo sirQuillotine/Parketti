@@ -7,22 +7,31 @@ db = sqlite3.connect("database.db")
 db.execute("DELETE FROM users")
 db.execute("DELETE FROM events")
 db.execute("DELETE FROM event_participants")
+db.execute("DELETE FROM styles")
+db.execute("DELETE FROM event_styles")
 
 user_count = 1000
-event_count = 10**5
+event_count = 10**3
 participant_count = 100
 
+styles = ["foksi", "fusku", "valssi", "jive", "samba", "tango"]
 
 
 content = '''Tanssi on taide- ja urheilumuoto, jossa ihminen liikuttaa vartaloaan, yleensä rytmikkäästi musiikin mukaan, tuottaakseen esteettisiä elämyksiä, huvitellakseen, sosiaalisena toimintana tai ilmaistakseen tanssillaan jotain. Tanssia voi nähdä myös uskonnollisissa ja muissa hengellisissä tilaisuuksissa. Toisaalta eräät uskonnolliset ryhmät suhtautuvat tanssiin torjuvasti ja pitävät sitä syntinä.
 
 Tanssi voi olla joko ennakolta määrättyjen askelkuvioiden noudattamista taikka vapaata liikkumista, usein musiikin tahtiin. Askelkuviot liittyvät usein perinteisiin tansseihin kuten valssi, foxtrot ja poloneesi. Tanssi voi olla myös taiteellinen esitys, jolloin sillä on usein ennalta määrätty koreografia. Tanssiesitys voi myös perustua joko osin tai kokonaan improvisaatioon. Tanssin elementtejä käytetään myös poikkitaiteellisesti muun muassa teatterin, sirkustaiteen kuin erilaisten performanssienkin yhteydessä. Tanssia voidaan harrastaa pareittain, yksin, tai ryhmässä.'''
 
+for style in styles:
+    db.execute("INSERT INTO styles (style) VALUES (?)", [style])
+print("Styles added!")
 
 for i in range(1, user_count + 1):
     db.execute("INSERT INTO users (username) VALUES (?)",
                ["user" + str(i)])
     
+
+
+
 print("Users added!")
 styles = ["foksi", "fusku", "valssi", "jive", "samba", "tango"]
 

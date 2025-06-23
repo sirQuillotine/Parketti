@@ -57,7 +57,8 @@ def register():
 @app.route("/add", methods=["GET", "POST"])
 def add():
     if request.method == "GET":
-        return render_template("add.html", session=session)
+        styles = event.get_styles()
+        return render_template("add.html", session=session, styles=styles)
 
     if request.method == "POST":
         check_csrf()
@@ -150,7 +151,8 @@ def edit_event(event_id):
         abort(403)
 
     if request.method == "GET":
-        return render_template("edit.html", event=event_e, session=session, next_page=request.referrer)
+        styles = event.get_styles()
+        return render_template("edit.html", event=event_e, session=session, next_page=request.referrer, styles=styles)
 
     if request.method == "POST":
         check_csrf()
@@ -167,9 +169,9 @@ def edit_event(event_id):
             datetime.strptime(start_time, "%Y-%m-%d")
         except ValueError:
             abort(403)
-        styles = request.form.getlist("styles")
+        event_styles = request.form.getlist("styles")
         next_page = request.form["next_page"]
-        event.update_event(event_id, title, content, start_time, styles)
+        event.update_event(event_id, title, content, start_time, styles=event_styles)
         return redirect(next_page)
 
 @app.route("/delete/<int:event_id>", methods=["GET", "POST"])
