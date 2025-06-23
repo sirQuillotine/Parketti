@@ -1,5 +1,8 @@
-<a href="/">Etusivu</a>
-<hr>
+{% extends "layout.html" %}
+
+{% block title %}Parketti{% endblock %}
+
+{% block content %}
 
 <h1>{{username}}</h1>
 
@@ -63,3 +66,5 @@
     Sivu {{ page2 }}/{{ page2_count }}
     <a href="/user/{{username}}/?own={{ page1 }}&part={{ page2 + 1}}">&gt;&gt;</a>
     </p>
+
+    {% endblock %}

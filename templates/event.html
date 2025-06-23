@@ -1,5 +1,10 @@
-  <a href="/">Etusivu</a>
-  <hr>
+{% extends "layout.html" %}
+
+{% block title %}Parketti{% endblock %}
+
+{% block content %}
+
+
 
 <h1>{{ event.title }}</h1>
 {{event.start_time | format_datetime}}
@@ -50,3 +55,5 @@
         <a href="/user/{{ participant }}">{{ participant }}</a>
     </p>
 {% endfor %}
+
+{% endblock %}

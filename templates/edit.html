@@ -1,7 +1,12 @@
+  {% extends "layout.html" %}
+
+{% block title %}Parketti{% endblock %}
+
+{% block content %}
+  
   <h2>Muokkaa tapahtumaa</h2>
 
-    <a href="/">Peruuta</a>
-  <hr>
+
 
   <form action="/edit/{{ event.id }}" method="post">
     <p>
@@ -32,3 +37,5 @@
 
     <input type="submit" value="Lähetä" />
   </form>
+
+  {% endblock %}

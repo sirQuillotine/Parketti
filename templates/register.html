@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Rekisteröinti</title>
-</head>
+{% block title %}Parketti{% endblock %}
 
-<body>
-        <a href="/">Etusivu</a>
-    <hr>
+{% block content %}
+
+
 
   {% for message in get_flashed_messages() %}
   <div class="info">
@@ -30,6 +27,4 @@
     </p>
     <input type="submit" value="Luo tunnus" />
   </form>
-</body>
-
-</html>
+{% endblock %}

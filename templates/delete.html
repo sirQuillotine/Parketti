@@ -1,3 +1,9 @@
+  {% extends "layout.html" %}
+
+{% block title %}Parketti{% endblock %}
+
+{% block content %}
+  
   <form action="/delete/{{ event.id }}" method="post">
     <p>
       Haluatko varmasti poistaa tapahtuman?
@@ -12,3 +18,5 @@
     <input type="submit" name="continue" value="Jatka" />
     <input type="submit" name="cancel" value="Peruuta" />
   </form>
+
+  {% endblock %}
