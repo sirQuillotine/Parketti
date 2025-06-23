@@ -5,8 +5,8 @@ header {
   margin: 0.5em 0;
 }
 
-body{
- background-color: aqua;
+body {
+  background-color: aqua;
 }
 
 .content {
@@ -30,40 +30,53 @@ body{
   height: 50px;
 }
 
-.title
-{
-    font-size: 2em;
-    text-align: center;
-    margin: 0.5em 0;
+.title {
+  font-size: 2em;
+  text-align: center;
+  margin: 0.5em 0;
 }
 
 
 
 
 nav {
-    text-align: center;
+  text-align: center;
 }
 
 nav ul {
-    display: inline-block;
-    padding: 0;
-    margin: 0;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
 }
 
 nav li {
-    display: inline-block;
-    padding: 0 1em;
-    margin: 0;
+  display: inline-block;
+  padding: 0 1em;
+  margin: 0;
 }
 
 .nav-left {
-    float: left;
+  float: left;
 }
 
 .nav-right {
-    float: right;
+  float: right;
 }
 
 nav li:not(:last-of-type) {
-    border-right: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.participants {
+  display: grid;
+  grid: auto auto / auto auto auto auto;
+}
+
+.participants>div {
+
+  margin: 10px;
+  padding: 20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+
 }

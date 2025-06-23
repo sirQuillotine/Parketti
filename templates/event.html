@@ -33,27 +33,43 @@
 
 <hr>
 
+<div class="event-participants">
+    <h2>Tapahtuman osallistujat:</h2>
 
-<h2>Tapahtumaan osallistuu:</h2>
+    {% if session.username and show==True%}
+    <form action="/event/{{event.id}}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <input type="submit" value="Ilmoittaudu tapahtumaan" />
+    </form>
+    {% endif %}
+    {% if session.username and show==False%}
+    <form action="/event/{{event.id}}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <input type="submit" value="Perun ilmoittautuminen" />
+    </form>
+    {% endif %}
 
-{% if session.username and show==True%}
-<form action="/event/{{event.id}}" method="post">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <input type="submit" value="Ilmoittaudu tapahtumaan" />
-</form>
-{% endif %}
+    <p>
+        Tapahtumaan on ilmoittautunut {{ participants|length }} henkilöä.
+    </p>
 
-{% if session.username and show==False%}
-<form action="/event/{{event.id}}" method="post">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <input type="submit" value="Perun ilmoittautuminen" />
-</form>
-{% endif %}
+    <div class="participants">
+        {% if participants|length == 0 %}
+        <p>Ei osallistujia</p>
+        {% else %}
+        {% for participant in participants %}
+        <div>
+            <p>
+                <a href="/user/{{ participant }}">{{ participant }}</a>
+            </p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
 
-{% for participant in participants %}
-<p>
-    <a href="/user/{{ participant }}">{{ participant }}</a>
-</p>
-{% endfor %}
+
+
+</div>
+
 
 {% endblock %}
