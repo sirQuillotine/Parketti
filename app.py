@@ -56,6 +56,8 @@ def register():
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
+    if not "username" in session.keys():
+        abort(403)
     if request.method == "GET":
         styles = event.get_styles()
         return render_template("add.html", session=session, styles=styles)
