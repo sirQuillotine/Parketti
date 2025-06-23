@@ -5,7 +5,7 @@ import math
 import time
 
 from flask import Flask
-from flask import redirect, render_template, abort, request, session, flash, g
+from flask import redirect, render_template, abort, request, session, flash, g, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import markupsafe
 
@@ -132,44 +132,59 @@ def event_details(event_id):
                             participants=event_participants, show=show_participation,
                             session=session)
 
-@app.route("/user/<username>/")
-def morr(username):
-    page1 = request.args.get("own")
-    page2 = request.args.get("part")
+@app.route("/user/<username>/", methods=["GET", "POST"])
+def user(username):
+    if request.method == "GET":
+        page1 = request.args.get("own")
+        page2 = request.args.get("part")
 
-    if not page1:
-        page1 = 1
-    if not page2:
-        page2 = 1
+        if not page1:
+            page1 = 1
+        if not page2:
+            page2 = 1
 
-    try:
-        page1 = int(page1)
-        page2 = int(page2)
-    except ValueError:
-        page1 = 1
-        page2 = 1
+        try:
+            page1 = int(page1)
+            page2 = int(page2)
+        except ValueError:
+            page1 = 1
+            page2 = 1
 
-    page_size = 5
+        page_size = 5
 
-    event_count = event.get_user_event_count(username)
-    page1_count = math.ceil(event_count / page_size)
-    page1_count = max(page1_count, 1)
+        event_count = event.get_user_event_count(username)
+        page1_count = math.ceil(event_count / page_size)
+        page1_count = max(page1_count, 1)
 
-    participation_count = event.get_user_participation_count(username)
-    page2_count = math.ceil(participation_count / page_size)
-    page2_count = max(page2_count, 1)
+        participation_count = event.get_user_participation_count(username)
+        page2_count = math.ceil(participation_count / page_size)
+        page2_count = max(page2_count, 1)
 
-    if page1 < 1 or page1 > page1_count or page2 < 1 or page2 > page2_count:
-        return redirect("/user/" + username + "?own=1")
+        if page1 < 1 or page1 > page1_count or page2 < 1 or page2 > page2_count:
+            return redirect("/user/" + username + "?own=1")
 
-    events = event.get_user_events(username, page1, page_size)
-    participations = event.get_user_participations(username, page2, page_size)
-    return render_template("user.html", events=events, event_count=event_count,
-                            page1=page1,
-                            page1_count=page1_count,
-                            participations=participations, participation_count=participation_count,
-                            page2=page2, page2_count=page2_count,
-                            username=username)
+        events = event.get_user_events(username, page1, page_size)
+        participations = event.get_user_participations(username, page2, page_size)
+        user = users.has_image(username)
+        
+        return render_template("user.html", events=events, event_count=event_count,
+                                page1=page1,
+                                page1_count=page1_count,
+                                participations=participations, participation_count=participation_count,
+                                page2=page2, page2_count=page2_count,
+                                username=username, session=session, user=user)
+    
+    if request.method == "POST":
+        file = request.files["image"]
+        if not file.filename.endswith(".jpg"):
+            return "VIRHE: väärä tiedostomuoto"
+
+        image = file.read()
+        if len(image) > 100 * 1024:
+            return "VIRHE: liian suuri kuva"
+        
+        users.update_image(username, image)
+        return redirect("/user/" + username)
 
 
 
@@ -258,3 +273,14 @@ def after_request(response):
     elapsed_time = round(time.time() - g.start_time, 2)
     print("elapsed time:", elapsed_time, "s")
     return response
+
+@app.route("/image/<username>")
+def show_image(username):
+    image = users.get_image(username)
+    if not image:
+        abort(404)
+
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
+

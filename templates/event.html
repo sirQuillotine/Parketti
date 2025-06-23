@@ -59,6 +59,7 @@
         {% else %}
         {% for participant in participants %}
         <div>
+            <img class="avatar" src="/image/{{ participant }}" label="{{participant}}'s avatar" />
             <p>
                 <a href="/user/{{ participant }}">{{ participant }}</a>
             </p>
