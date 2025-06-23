@@ -2,7 +2,8 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
-    password_hash TEXT
+    password_hash TEXT,
+    image BLOB
 );
 
 DROP TABLE IF EXISTS events;

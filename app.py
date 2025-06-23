@@ -9,9 +9,10 @@ from flask import redirect, render_template, abort, request, session, flash, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import markupsafe
 
-
-import db
 import event
+import users
+
+
 
 
 
@@ -36,7 +37,6 @@ def index(page=1):
     event_count = event.get_event_count()
     page_count = math.ceil(event_count / page_size)
     page_count = max(page_count, 1)
-
     if page < 1:
         return redirect("/1")
     if page > page_count:
@@ -74,8 +74,7 @@ def register():
         flash("VIRHE: salasanan tulee olla vähintään 3 merkkiä pitkä")
         return render_template("register.html", filled=username)
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.register_user(username, password_hash)
     except sqlite3.IntegrityError:
         flash("VIRHE: tunnus on jo varattu")
         return render_template("register.html", filled=username)
@@ -134,7 +133,7 @@ def event_details(event_id):
                             session=session)
 
 @app.route("/user/<username>/")
-def user(username):
+def morr(username):
     page1 = request.args.get("own")
     page2 = request.args.get("part")
 
@@ -231,8 +230,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_hash = db.query(sql, [username])[0][0] if db.query(sql, [username]) else ""
+        password_hash = users.get_password_hash(username)
         if not check_password_hash(password_hash, password):
             flash("VIRHE: väärä tunnus tai salasana") 
             return redirect("/login")
