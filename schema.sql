@@ -9,7 +9,7 @@ CREATE TABLE events (
     title TEXT,
     content TEXT,
     start_time TEXT,
-    username TEXT
+    username TEXT REFERENCES users(username) ON DELETE CASCADE,
 );
 
 CREATE TABLE event_styles (
